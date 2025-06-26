@@ -1,27 +1,27 @@
 // --- Global Logging Utility ---
 window.LogStore = [];
 window.LogType = {
-  0: "INFO",
-  1: "WARN",
-  2: "ERRR",
-  3: "CRIT",
-  info: 0,
-  warning: 1,
-  error: 2,
-  critical: 3,
+    0: "INFO",
+    1: "WARN",
+    2: "ERRR",
+    3: "CRIT",
+    info: 0,
+    warning: 1,
+    error: 2,
+    critical: 3,
 };
 window.Log = function Log(source, message, type = 0) {
-  if (typeof type === 'string' && window.LogType[type] !== undefined) type = window.LogType[type];
-  if (!window.LogType[type]) return;
-  const timestamp = new Date().toJSON();
-  const msg = `[${window.LogType[type]}] ${timestamp} | ${source}: ${message}`;
-  console.log(msg);
-  window.LogStore.push(msg);
+    if (typeof type === 'string' && window.LogType[type] !== undefined) type = window.LogType[type];
+    if (!window.LogType[type]) return;
+    const timestamp = new Date().toJSON();
+    const msg = `[${window.LogType[type]}] ${timestamp} | ${source}: ${message}`;
+    console.log(msg);
+    window.LogStore.push(msg);
 };
 
 // --- OliveFS: Hybrid Filesystem (DB for /cloud, IndexedDB for others) ---
 // Usage: window.OliveFS.readFile('/foo/bar.txt'), etc.
-window.OliveFS = (function() {
+window.OliveFS = (function () {
     const FS_KEY = 'oliveos_fs_v2';
     const CLOUD_PREFIX = '/cloud';
     // --- IndexedDB helpers ---
@@ -68,7 +68,7 @@ window.OliveFS = (function() {
         return new Promise((resolve, reject) => {
             const files = [];
             const req = store.openCursor();
-            req.onsuccess = function() {
+            req.onsuccess = function () {
                 const cursor = req.result;
                 if (cursor) {
                     if (cursor.key.startsWith(dir === '/' ? '/' : dir + '/')) {
@@ -366,7 +366,7 @@ function createAppWindow(app) {
         if (iframe) iframe.style.transition = 'none';
         if (iframe) iframe.style.animation = 'none';
     });
-    win.addEventListener('mousedown', function(e) {
+    win.addEventListener('mousedown', function (e) {
         if (e.target === win && win.style.resize !== 'none') {
             resizing = true;
             const iframe = win.querySelector('iframe');
@@ -378,7 +378,7 @@ function createAppWindow(app) {
             if (iframe) iframe.style.animation = 'none';
         }
     });
-    win.addEventListener('mouseup', function() {
+    win.addEventListener('mouseup', function () {
         if (resizing) {
             resizing = false;
             const iframe = win.querySelector('iframe');
@@ -478,7 +478,7 @@ function makeWindowDraggable(win, setUserSelectNone) {
     }
     dragHandle.addEventListener('mousedown', onMouseDown);
     // Touch support
-    dragHandle.addEventListener('touchstart', function(e) {
+    dragHandle.addEventListener('touchstart', function (e) {
         if (e.touches.length !== 1) return;
         isDragging = true;
         startX = e.touches[0].clientX;
@@ -493,7 +493,7 @@ function makeWindowDraggable(win, setUserSelectNone) {
         // Disable iframe interaction while dragging (touch)
         const iframe = win.querySelector('iframe');
         if (iframe) iframe.style.pointerEvents = 'none';
-        document.addEventListener('touchmove', onTouchMove, {passive:false});
+        document.addEventListener('touchmove', onTouchMove, { passive: false });
         document.addEventListener('touchend', onTouchEnd);
         e.preventDefault();
     });
@@ -531,7 +531,7 @@ async function openApp(appId) {
     const win = createAppWindow(app);
     const container = document.getElementById('app_windows_container');
     if (container) {
-      container.appendChild(win);
+        container.appendChild(win);
     }
     openApps.push(app);
     focusedAppIndex = openApps.length - 1;
@@ -552,7 +552,7 @@ async function closeApp(appId) {
     if (stillOpen.length > 0) {
         const lastOpenApp = stillOpen[stillOpen.length - 1];
         if (lastOpenApp) {
-          focusApp(lastOpenApp.id);
+            focusApp(lastOpenApp.id);
         }
     }
     // --- FIX: Re-render taskbar to hide the closed app icon ---
@@ -598,10 +598,10 @@ function focusApp(appId) {
 function setupWindowFocusOnClick() {
     const container = document.getElementById('app_windows_container');
     if (container) {
-      container.addEventListener('mousedown', e => {
-          let win = e.target.closest('.app_window');
-          if (win) focusApp(win.id);
-      });
+        container.addEventListener('mousedown', e => {
+            let win = e.target.closest('.app_window');
+            if (win) focusApp(win.id);
+        });
     }
 }
 
@@ -669,7 +669,7 @@ async function loadDynamicApps() {
                         }
                     }
                 }
-            } catch {}
+            } catch { }
             let iframePath = `/${appRoot}/${folder}${workingDir ? `/${workingDir}` : ''}/${htmlFile}`.replace(/\\/g, '/').replace(/\s+/g, '').replace(/([^:])\/+/g, '$1/');
             const ui = manifest.ui || {};
             appTemplates.push({
@@ -723,24 +723,24 @@ async function renderTaskbarAppIcons() {
             if (app.type === 'windowed' && (!isInvisible || isOpen)) {
                 const icon = document.createElement('div');
                 icon.className = 'taskbar-app-icon fade-hover';
-                
+
                 if (app.icon?.endsWith('.png')) {
                     icon.innerHTML = `<img src="${app.icon}" alt="${app.name}" onerror="this.onerror=null;this.src='${app.iconFallback}'" class="fade-icon" />`;
                 } else {
                     icon.innerHTML = `<i data-lucide="${app.icon || 'globe'}"></i>`;
                 }
-                
+
                 icon.title = app.name;
                 icon.id = 'taskbar_icon_' + app.id;
                 icon.onclick = () => openApp(app.id);
-                
+
                 if (isOpen) {
                     icon.classList.add('open-indicator');
                     if (document.querySelector(`.app_window.focused#${app.id}`)) {
                         icon.classList.add('active');
                     }
                 }
-                
+
                 wrapper.appendChild(icon);
             }
         });
@@ -757,13 +757,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     lucide.createIcons();
     animatePills();
     setupTooltips();
-    
+
     function updateTime() {
         const now = new Date();
         const timeEl = document.getElementById('time_currently');
         const dateEl = document.getElementById('date_currently');
-        if (timeEl) timeEl.textContent = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-        if (dateEl) dateEl.textContent = now.toLocaleDateString([], {day: '2-digit', month: '2-digit', year: 'numeric'});
+        if (timeEl) timeEl.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        if (dateEl) dateEl.textContent = now.toLocaleDateString([], { day: '2-digit', month: '2-digit', year: 'numeric' });
     }
     updateTime();
     setInterval(updateTime, 60000);
@@ -773,13 +773,40 @@ document.addEventListener('DOMContentLoaded', async () => {
     setupAppScaling();
     setupWindowFocusOnClick();
 
-    fetch('/api/whoami', { credentials: 'include' })
-        .then(res => {
-            if (res.status === 401) window.location.href = '/login';
-        })
-        .catch(() => {
-            window.location.href = '/login';
-        });
+    window.rotur = { enabled: false, user: null };
+
+    const token = localStorage.getItem('rotur_token');
+    console.log('Rotur token:', token);
+    if (token) {
+        document.body.classList.add('logged-in');
+        fetch('https://social.rotur.dev/get_user?auth=' + encodeURIComponent(token))
+            .then(res => res.json())
+            .then(user => {
+                if (user.error) {
+                    prompt(user.error);
+                   // window.location.href = '/login';
+                } else {
+                    delete user.key;
+                    delete user.password;
+                    window.rotur = {
+                        enabled: true,
+                        user: user
+                    };
+                }
+            })
+            .catch(err => {
+                console.error('Failed to fetch user data:', err);
+                // window.location.href = '/login';
+            });
+    } else {
+        fetch('/api/whoami', { credentials: 'include' })
+            .then(res => {
+                // if (res.status === 401) window.location.href = '/login';
+            })
+            .catch(() => {
+                // window.location.href = '/login';
+            });
+    }
 });
 
 // --- Simple Terminal App ---
